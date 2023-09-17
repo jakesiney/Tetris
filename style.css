@@ -14,3 +14,21 @@
 .tetromino {
   background-color: blue;
 }
+
+.mini-grid {
+  width: 80px;
+  height: 80px;
+  background-color: yellow;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.mini-grid div {
+  width: 20px;
+  height: 20px;
+}
+
+.container {
+  display: flex;
+  /* justify-content: space-between; */
+}
