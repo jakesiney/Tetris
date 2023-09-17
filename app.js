@@ -1,10 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const grid = document.querySelector(".grid");
-  let squares = Array.from(document.querySelectorAll(".grid div"));
-  const ScoreDisplay = document.querySelector("#score");
-  const StartBtn = document.querySelector("#start-button");
-  const width = 10;
-  let nextRandom = 0;
+  const grid = document.querySelector(".grid")
+  let squares = Array.from(document.querySelectorAll(".grid div"))
+  const scoreDisplay = document.querySelector("#score")
+  const startBtn = document.querySelector("#start-button")
+  const width = 10
+  let nextRandom = 0
+  let timerId
+  let score = 0
 
   // Tetrominoes
   const lTetromino = [
@@ -50,42 +52,42 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log(theTetrominoes[0][0]);
 
   // Randomly select a tetromino and its first rotation.
-  let random = Math.floor(Math.random() * theTetrominoes.length);
-  let current = theTetrominoes[random][0];
+  let random = Math.floor(Math.random() * theTetrominoes.length)
+  let current = theTetrominoes[random][0]
 
   // Draw the Tetromino.
   function draw() {
-    current.forEach((index) => {squares[currentPosition + index].classList.add("tetromino");});
+    current.forEach((index) => {squares[currentPosition + index].classList.add("tetromino");})
   }
 
   // Undraw the Tetromino.
   function undraw() {
-    current.forEach((index) => {squares[currentPosition + index].classList.remove("tetromino");});
+    current.forEach((index) => {squares[currentPosition + index].classList.remove("tetromino");})
   }
 
   // This makes the tetromino move down every second.
-  timerId = setInterval(moveDown, 1000);
+  // timerId = setInterval(moveDown, 1000)
 
-  // Assign functions to the keyCodes.
+  // Assign functions to the keyCodes and the buttons.
   function control(e) {
-    if (e.keyCode === 37) {
-      moveLeft();
-    } else if (e.keyCode === 38) {
-      rotate();
+    if (e.keyCode === 37 || e.target.id === "left-button") { 
+      moveLeft() 
+    } else if (e.keyCode === 38 ) {
+      rotate()
     } else if (e.keyCode === 39) {
-      moveRight();
+      moveRight()
     } else if (e.keyCode === 40) {
-      moveDown();
+      moveDown()
     }
   }
   document.addEventListener("keyup", control);
 
   // This function moves the tetromino down.
   function moveDown() {
-    undraw();
+    undraw()
     currentPosition += width;
-    draw();
-    freeze();
+    draw()
+    freeze()
   }
 
   // This function freezes the tetromino.
@@ -102,6 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       draw()
       displayShape()
+      addScore()
     }
   }
 
@@ -167,5 +170,38 @@ document.addEventListener("DOMContentLoaded", () => {
       displaySquares[displayIndex + index].classList.add("tetromino")
       })
   }
+
+// Add functionality to the button.
+startBtn.addEventListener("click", () => {
+  if (timerId) {
+    clearInterval(timerId)
+    timerId = null
+  } else {
+    draw()
+    timerId = setInterval(moveDown, 1000)
+    nextRandom = Math.floor(Math.random() * theTetrominoes.length)
+    displayShape()
+  }
+})
+
+// Add score.
+function addScore() {
+  for (let i = 0; i < 199; i += width) {
+    const row = [i, i + 1, i + 2, i + 3, i + 4, i + 5, i + 6,i + 7, i + 8, i + 9]
+
+    if (row.every(index => squares[index].classList.contains("taken"))) {
+      score += 10
+      scoreDisplay.innerHTML = score
+      row.forEach(index => {
+        squares[index].classList.remove("taken")
+        squares[index].classList.remove("tetromino")
+      })
+      const squaresRemoved = squares.splice(i, width)
+      squares = squaresRemoved.concat(squares)
+      squares.forEach(cell => grid.appendChild(cell))
+    }
+  }
+}
+
 
 })
