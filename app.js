@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const ScoreDisplay = document.querySelector("#score");
   const StartBtn = document.querySelector("#start-button");
   const width = 10;
+  let nextRandom = 0;
 
   // Tetrominoes
   const lTetromino = [
@@ -89,14 +90,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // This function freezes the tetromino.
   function freeze() {
-    if (
-      current.some((index) =>
-        squares[currentPosition + index + width].classList.contains("taken")
-      )
-    ) {
-      current.forEach((index) =>
-        squares[currentPosition + index].classList.add("taken")
-      );
+    if (current.some((index) => squares[currentPosition + index + width].classList.contains("taken"))) {
+      current.forEach((index) => squares[currentPosition + index].classList.add("taken"));
       random = Math.floor(Math.random() * theTetrominoes.length);
       current = theTetrominoes[random][currentRotation];
       // Start a new tetromino falling.
@@ -110,15 +105,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // This function moves the tetromino left, unless it is at the edge or there is a blockage.
   function moveLeft() {
     undraw();
-    const isAtLeftEdge = current.some(
-      (index) => (currentPosition + index) % width === 0
-    );
+    const isAtLeftEdge = current.some((index) => (currentPosition + index) % width === 0);
     if (!isAtLeftEdge) currentPosition -= 1;
-    if (
-      current.some((index) =>
-        squares[currentPosition + index].classList.contains("taken")
-      )
-    ) {
+    if (current.some((index) => squares[currentPosition + index].classList.contains("taken"))) {
       currentPosition += 1;
     }
 
@@ -141,13 +130,37 @@ document.addEventListener("DOMContentLoaded", () => {
   function rotate() {
     undraw();
     currentRotation++;
-    if (currentRotation === current.length) {currentRotation = 0; // If the current rotation gets to 4, make it go back to 0.
-    }
+    // If the current rotation gets to 4, make it go back to 0.
+    if (currentRotation === current.length) {currentRotation = 0;}
     current = theTetrominoes[random][currentRotation];
 
     draw();
   }
     
+  // Show up-next tetromino in mini-grid display.
+  const displaySquares = document.querySelectorAll(".mini-grid div");
+  const displayWidth = 4;
+  let displayIndex = 0;
+
+
+  // The Tetrominoes without rotations.
+  const upNextTetrominoes = [
+    [1, displayWidth + 1, displayWidth * 2 + 1, 2], // lTetromino
+    [0, displayWidth, displayWidth + 1, displayWidth * 2 + 1], // zTetromino
+    [1, displayWidth, displayWidth + 1, displayWidth + 2], // tTetromino
+    [0, 1, displayWidth, displayWidth + 1], // oTetromino
+    [1, displayWidth + 1, displayWidth * 2 + 1, displayWidth * 3 + 1], // iTetrimino
+  ];
+
+  // Display the shape in the mini-grid display.
+  function displayShape() {
+    // Remove any trace of a tetromino from the entire grid.
+    displaySquares.forEach((square) => {
+      square.classList.remove("tetromino")
+      })
+    upNextTetrominoes[nextRandom]
+  }
+
 
 
 })

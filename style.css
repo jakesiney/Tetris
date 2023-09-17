@@ -1,3 +1,8 @@
+.container {
+  display: flex;
+  /* justify-content: space-between; */
+}
+
 .grid {
   width: 200px;
   height: 400px;
@@ -16,6 +21,7 @@
 }
 
 .mini-grid {
+  margin-left: 80px;
   width: 80px;
   height: 80px;
   background-color: yellow;
@@ -26,9 +32,4 @@
 .mini-grid div {
   width: 20px;
   height: 20px;
-}
-
-.container {
-  display: flex;
-  /* justify-content: space-between; */
 }
